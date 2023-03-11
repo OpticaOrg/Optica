@@ -20,8 +20,12 @@ imageController.saveImageToSQL = (req, res, next) => {
         // if (err) res.send(err);
         // if (result) res.send({ url: req.query.url, prompt: req.query.prompt });
         // if (result) res.send({ url: req.query.url, prompt: req.query.prompt });
-        if (fields) console.log(fields);
-        return next();
+        if (result) {
+          console.log(result)
+          con.end();
+          return next();
+        }
+        // if (fields) console.log(fields);
       })
     })
   } else {
@@ -33,11 +37,15 @@ imageController.getImageFromSQL = (req, res, next) => {
   console.log('Inside imageController.getImageFromSQL middleware');
   con.connect(function (err) {
     // con.query(`SELECT * FROM main.images`, function (err, result, fields) {
-    con.query(`DESCRIBE main.images`, function (err, result, fields) {
+    con.query(`SELECT * FROM main.images`, function (err, result, fields) {
       // if (err) res.send(err);
       // if (result) res.send(result);
-      if (fields) console.log(fields);
-      return next();
+      if (result) {
+        console.log(result)
+        con.end();
+        return next();
+      }
+      // if (fields) console.log(fields);
     });
   });
 };
