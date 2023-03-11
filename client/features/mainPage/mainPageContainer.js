@@ -2,10 +2,10 @@ import React from 'react'
 import { GalleryContainer } from '../gallery/galleryContainer'
 import { SearchComponent } from './searchComponent'
 
-export function SplashContainer() {
+export function MainPage() {
 
   return(
-    <div className='splashContainer'>
+    <div className='mainPage'>
       <SearchComponent />
       {/* <ImageUploadComponent /> */}
       <GalleryContainer />
