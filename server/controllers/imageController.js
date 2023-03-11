@@ -28,7 +28,7 @@ imageController.saveImageToSQL = (req, res, next) => {
     console.log('Inside imageController.addImage middleware');
     con.connect((err) => {
       con.query(
-        `INSERT INTO main.images (url, prompt) VALUES ('${amazonURL}', '${req.query.prompt}');`,
+        `INSERT INTO images (url, prompt) VALUES ('${amazonURL}', '${req.query.prompt}');`,
         function (error, result, fields) {
           if (result) {
             con.end();
@@ -45,7 +45,30 @@ imageController.saveImageToSQL = (req, res, next) => {
 imageController.getImageFromSQL = (req, res, next) => {
   con.connect(function (err) {
     con.query(
-      `SELECT * FROM main.images ORDER BY RAND() LIMIT 16`,
+      `SELECT url FROM images ORDER BY RAND() LIMIT 16`,
+      function (err, result, fields) {
+        if (err) return next({ err });
+
+        const urlArray = result.map((image) => image.url);
+        res.locals.urls = urlArray;
+        return next();
+      }
+    );
+    if (err) return next({ e });
+  });
+};
+
+imageController.getSearchFromSQL = (req, res, next) => {
+  const { id } = req.query;
+  const { pg } = req.query;
+
+  con.connect(function (err) {
+    con.query(
+      `SELECT url FROM images 
+      INNER JOIN images_keywords ON images.id = images_keywords.image_id 
+      INNER JOIN keywords ON images_keywords.keyword_id = keywords.id 
+      WHERE keywords.keyword = ${id}
+      LIMIT 16 OFFSET ${(pg * 16) - 16}`,
       function (err, result, fields) {
         if (err) return next({ err });
 
