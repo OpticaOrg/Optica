@@ -13,7 +13,7 @@ app.use((req, res) =>
 );
 
 /**
- * Global error handler
+ * Global error handler -- CHANGE TO NOT SHOW CLIENT ANYTHING TOO SPECIFIC, BUT RATHER SHOW A GENERIC CONSOLE LOG FOR NOW. CAN CHANGE TO AN ERROR PAGE/RESPONSE LATER?
  */
 app.use((err, req, res, next) => {
   console.log(err);
