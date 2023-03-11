@@ -2,7 +2,7 @@ import React from 'react'
 import { ImageComponent } from './imageComponent'
 export function GalleryContainer() {
   
-  const imgUrl = 'https://image.lexica.art/full_jpg/92adc853-077c-4c8d-a829-65aa5b526232'
+  const imgUrl = 'https://image.lexica.art/md2/02e95e19-e40c-451c-b154-aac8f674013f'
 
   const imageComponentArray = [];
   let counter = 0;
