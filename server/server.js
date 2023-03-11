@@ -9,12 +9,12 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.get('/images', imageController.getImageFromSQL, (req, res) => {
-  return res.status(200).send('Image retrieved from database!');
+  return res.status(200).json(res.locals.urls);
 });
 
 app.post('/images', imageController.saveImageToSQL, (req, res) => {
   return res.status(200).send('Image saved to database!');
-})
+});
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) =>

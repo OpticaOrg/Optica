@@ -9,20 +9,20 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY
 });
 
-//NOTE: May not use readFileSync if a blob is given to us.
-const uploadFile = (fileName) => {
+const uploadFile = (blob) => {
   // Read content from the file
-  let fileContent;
-  try {
-    fileContent = fs.readFileSync(fileName);
-  } catch (e) {
-    throw e;
-  }
+  //NOTE: CURRENTLY EXPECTING THE BLOB, BUT WE CAN CHANGE THIS AS NECESSARY.
+  // let fileContent;
+  // try {
+  //   fileContent = fs.readFileSync(fileName);
+  // } catch (e) {
+  //   throw e;
+  // }
   // Setting up S3 upload parameters
   const params = {
     Bucket: process.env.BUCKET_NAME,
     Key: `${uuidv4()}.jpg`, // File name you want to save as in S3 -- maybe a randomly generated key.
-    Body: fileContent
+    Body: blob
   };
 
   // Uploading files to the bucket. Return the URL.

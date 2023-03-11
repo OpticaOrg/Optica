@@ -1,6 +1,5 @@
-const { json } = require('express');
-
 const mysql = require('mysql');
+const uploadImageToBucket = require('../models/imageStorageModel');
 require('dotenv').config();
 
 const con = mysql.createConnection({
@@ -13,40 +12,50 @@ const con = mysql.createConnection({
 const imageController = {};
 
 imageController.saveImageToSQL = (req, res, next) => {
-  if (req.query.url && req.query.prompt) {
-    console.log('Inside imageController.addImage middleware')
+  //Upload the image to S3 bucket. Will recieve URL to store in mySQL.
+  //I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
+  const { img } = req.body;
+
+  //If the upload fails return the error.
+  let amazonURL;
+  try {
+    amazonURL = uploadImageToBucket(img);
+  } catch (e) {
+    return next({ e });
+  }
+
+  if (req.query.prompt) {
+    console.log('Inside imageController.addImage middleware');
     con.connect((err) => {
-      con.query(`INSERT INTO main.images (url, prompt) VALUES ('${req.query.url}', '${req.query.prompt}');`, function (error, result, fields) {
-        // if (err) res.send(err);
-        // if (result) res.send({ url: req.query.url, prompt: req.query.prompt });
-        // if (result) res.send({ url: req.query.url, prompt: req.query.prompt });
-        if (result) {
-          console.log(result)
-          con.end();
-          return next();
+      con.query(
+        `INSERT INTO main.images (url, prompt) VALUES ('${amazonURL}', '${req.query.prompt}');`,
+        function (error, result, fields) {
+          if (result) {
+            con.end();
+            return next();
+          }
         }
-        // if (fields) console.log(fields);
-      })
-    })
+      );
+    });
   } else {
     console.log('Missing an image parameter (either url or prompt)');
   }
 };
 
 imageController.getImageFromSQL = (req, res, next) => {
-  console.log('Inside imageController.getImageFromSQL middleware');
   con.connect(function (err) {
-    // con.query(`SELECT * FROM main.images`, function (err, result, fields) {
-    con.query(`SELECT * FROM main.images`, function (err, result, fields) {
-      // if (err) res.send(err);
-      // if (result) res.send(result);
-      if (result) {
-        console.log(result)
-        con.end();
+    con.query(
+      `SELECT * FROM main.images ORDER BY RAND() LIMIT 16`,
+      function (err, result, fields) {
+        if (err) return next({ err });
+
+        console.log(result);
+        const urlArray = result.map((image) => image.url);
+        res.locals.urls = urlArray;
         return next();
       }
-      // if (fields) console.log(fields);
-    });
+    );
+    if (err) return next({ e });
   });
 };
 
