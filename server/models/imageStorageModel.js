@@ -4,11 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 
 require('dotenv').config();
 
+//Create a connection to the AWS S3 server.
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY
 });
 
+//Uplaod the image blob to a specified S3 bucket.
 const uploadFile = (blob) => {
   // Read content from the file
   //NOTE: CURRENTLY EXPECTING THE BLOB, BUT WE CAN CHANGE THIS AS NECESSARY.
