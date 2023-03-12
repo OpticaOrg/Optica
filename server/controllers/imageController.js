@@ -48,44 +48,49 @@ imageController.saveImageToSQL = (req, res, next) => {
   }
 };
 
-//Get 16 images from the SQL database sorted by most recent.
+//Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
-  con.connect(function (err) {
-    con.query(
-      `SELECT url FROM images ORDER BY RAND() LIMIT 16`,
-      function (err, result, fields) {
-        if (err) return next({ err });
+  const { pg } = req.query;
 
-        const urlArray = result.map((image) => image.url);
-        res.locals.urls = urlArray;
-        return next();
-      }
-    );
+  con.connect(function (err) {
+    const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
+    const specificImageStartValue = pg * 16 - 16;
+    const queryParameters = [specificImageStartValue];
+
+    con.query(queryString, queryParameters, (err, result, fields) => {
+      if (err) return next({ err });
+      const urlArray = result.map((image) => image.url);
+      res.locals.urls = urlArray;
+      return next();
+    });
     if (err) return next({ e });
   });
 };
 
 //Get 16 (paginated) images based on a given query string.
 imageController.getSearchFromSQL = (req, res, next) => {
-  const { id } = req.query;
+  const { keyword } = req.query;
   const { pg } = req.query;
 
   con.connect(function (err) {
-    con.query(
-      `SELECT url FROM images 
-      INNER JOIN images_keywords ON images.id = images_keywords.image_id 
-      INNER JOIN keywords ON images_keywords.keyword_id = keywords.id 
-      WHERE keywords.keyword = ${id}
-      LIMIT 16 OFFSET ${pg * 16 - 16}`,
-      function (err, result, fields) {
-        if (err) return next({ err });
+    const queryString = `SELECT url FROM images 
+    INNER JOIN images_keywords ON images.id = images_keywords.image_id 
+    INNER JOIN keywords ON images_keywords.keyword_id = keywords.id 
+    WHERE keywords.keyword = ?
+    ORDER BY id DESC
+    LIMIT 16 OFFSET ?`;
 
-        console.log(result);
-        const urlArray = result.map((image) => image.url);
-        res.locals.urls = urlArray;
-        return next();
-      }
-    );
+    const specificImageStartValue = pg * 16 - 16;
+    const queryParameters = [keyword, specificImageStartValue];
+
+    con.query(queryString, queryParameters, (err, result, fields) => {
+      if (err) return next({ err });
+
+      console.log(result);
+      const urlArray = result.map((image) => image.url);
+      res.locals.urls = urlArray;
+      return next();
+    });
     if (err) return next({ e });
   });
 };
