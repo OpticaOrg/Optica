@@ -1,13 +1,24 @@
 body {
-  background-color: rgb(60, 60, 60);
+  background-color: rgb(40, 40, 40);
   text-align: center;
+  margin: 0;
+
 }
 
 h1 {
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 5em;
   font-family: Palatino, URW Palladio L, serif;
   font-weight: 500;
+}
+
+h3 {
+  color: rgb(170, 170, 170);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 100;
+  font-size: 1em;
+  margin-top: -30px;
+  margin-bottom: 40px;
 }
 
 .mainPage {
@@ -17,7 +28,7 @@ h1 {
 }
 
 .searchForm {
-  background-color: rgb(100, 100, 100);
+  background-color: rgb(70, 70, 70);
   border-style: none;
   width: 450px;
   height: 35px;
@@ -25,7 +36,7 @@ h1 {
   margin: 10px;
   text-indent: 30px;
   font-size: 15px;
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .searchForm::placeholder {
@@ -44,7 +55,7 @@ h1 {
   border-radius: 35px;
   margin: 0 10px;
   border-style: none;
-  color: white;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 15px;
 }
 
@@ -57,12 +68,12 @@ h1 {
 }
 
 #searchButton {
-  background-color: teal;
+  background-color: #004b91;
 }
 
 #uploadButton {
-  border: 1.5px solid white;
-  background-color: rgb(60, 60, 60);
+  border: 1.2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgb(40, 40, 40);
 }
 
 .galleryContainer {
@@ -86,4 +97,65 @@ h1 {
   // flex-grow: 1;
   width: 100%;
   border-radius: 5px;
+}
+
+/* Style the header with a grey background and some padding */
+.header {
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 5px 10px;
+  top: 0;
+  position: sticky;
+  backdrop-filter: blur(5px);
+}
+
+/* Style the header links */
+.header a {
+  float: left;
+  color: rgb(170, 170, 170);
+  text-align: center;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 25px;
+  border-radius: 4px;
+}
+
+/* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Palatino, URW Palladio L, serif;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9)
+}
+
+/* Change the background color on mouse-over */
+.header a:hover {
+  background-color: rgb(40, 40, 40);
+}
+
+/* Style the active/current link*/
+.header a.active {
+  // background-color: dodgerblue;
+  // color: white;
+}
+
+/* Float the link section to the right */
+.header-right {
+  float: right;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+
+  .header-right {
+    float: none;
+  }
 }
