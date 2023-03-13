@@ -1,13 +1,22 @@
 body {
-  background-color: rgb(60, 60, 60);
+  background-color: rgb(40, 40, 40);
   text-align: center;
 }
 
 h1 {
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 5em;
   font-family: Palatino, URW Palladio L, serif;
   font-weight: 500;
+}
+
+h3 {
+  color: rgb(170, 170, 170);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 100;
+  font-size: 1em;
+  margin-top: -20px;
+  margin-bottom: 40px;
 }
 
 .mainPage {
@@ -17,7 +26,7 @@ h1 {
 }
 
 .searchForm {
-  background-color: rgb(100, 100, 100);
+  background-color: rgb(80, 80, 80);
   border-style: none;
   width: 450px;
   height: 35px;
@@ -25,7 +34,7 @@ h1 {
   margin: 10px;
   text-indent: 30px;
   font-size: 15px;
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .searchForm::placeholder {
@@ -44,7 +53,7 @@ h1 {
   border-radius: 35px;
   margin: 0 10px;
   border-style: none;
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 15px;
 }
 
@@ -57,12 +66,12 @@ h1 {
 }
 
 #searchButton {
-  background-color: teal;
+  background-color: #004b91;
 }
 
 #uploadButton {
-  border: 1.5px solid white;
-  background-color: rgb(60, 60, 60);
+  border: 1.2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgb(40, 40, 40);
 }
 
 .galleryContainer {

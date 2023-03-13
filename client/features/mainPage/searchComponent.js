@@ -3,7 +3,8 @@ import React from 'react';
 export function SearchComponent() {
   return (
     <div>
-      <h1>AI Art Gallery</h1>
+      <h1>Optica</h1>
+      <h3>The OpenAI DALL-E Search Engine</h3>
       <form className="search">
         <label>
           <input
