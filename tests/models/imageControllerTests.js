@@ -141,7 +141,7 @@ const getJoinTable = () => {
 // getJoinTable();
 
 const getSearchFromSQL = () => {
-  const keyword = 'basket';
+  const keyword = 'cactus';
   const pg = 1;
 
   con.connect(function (err) {
