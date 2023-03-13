@@ -1,9 +1,9 @@
 import React from 'react'
 
-export function ImageComponent({imgUrl}) {
+export function ImageComponent({ imgUrl }) {
   return (
-    <div>
-      <img width="200px" src={imgUrl}></img>
+    <div className='imageComponentContainer'>
+      <img className='imageComponent' src={imgUrl}></img>
     </div>
 
   )

@@ -1,4 +1,85 @@
-.galleryContainer{
+body {
+  background-color: rgb(60, 60, 60);
+  text-align: center;
+}
+
+h1 {
+  color: white;
+  font-size: 5em;
+  font-family: Palatino, URW Palladio L, serif;
+  font-weight: 500;
+}
+
+.mainPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchForm {
+  background-color: rgb(100, 100, 100);
+  border-style: none;
+  width: 450px;
+  height: 35px;
+  border-radius: 35px;
+  margin: 10px;
+  text-indent: 30px;
+  font-size: 15px;
+  color: white;
+}
+
+.searchForm::placeholder {
+  color: rgb(170, 170, 170);
+  opacity: 1;
+}
+
+.buttonsContainer {
+  margin: 10px;
+  margin-bottom: 50px;
+}
+
+.buttons {
+  height: 35px;
+  width: 120px;
+  border-radius: 35px;
+  margin: 0 10px;
+  border-style: none;
+  color: white;
+  font-size: 15px;
+}
+
+.buttons:active {
+  opacity: 0.7;
+}
+
+#searchButton {
+  background-color: teal;
+}
+
+#uploadButton {
+  border: 1.5px solid white;
+  background-color: rgb(60, 60, 60);
+}
+
+.galleryContainer {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 0px;
+  column-gap: 4px;
+}
+
+.imageComponentContainer {
+  // display: inline-block;
+  // flex-grow: 1;
+  // width: 21%;
+  width: 24.5%;
+}
+
+.imageComponent {
+  // width: 350px;
+  // display: inline-block;
+  // flex-grow: 1;
+  width: 100%;
+  border-radius: 5px;
 }
