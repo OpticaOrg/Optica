@@ -6,14 +6,16 @@ const axios = require('axios');
 export function GalleryContainer() {
   const [urls, setURLs] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [keepUpdating, setKeepUpdating] = useState(true);
 
   useEffect(() => {
-    if (pageNumber >= 4) return;
+    if (!keepUpdating) return;
     (async () => {
       const res = await axios(`http://localhost:3000/images?pg=${pageNumber}`, {
         mode: 'no-cors'
       });
       const arr = res.data;
+      if (arr.length !== 16) setKeepUpdating(false);
       setURLs((oldURLs) => [...oldURLs, ...arr]);
     })();
   }, [pageNumber]);
