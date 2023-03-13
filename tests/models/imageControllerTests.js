@@ -115,7 +115,6 @@ const getKeywords = () => {
         return;
       }
       console.log(result);
-      debugger;
     });
     if (err) console.log(err);
   });
@@ -142,7 +141,7 @@ const getJoinTable = () => {
 // getJoinTable();
 
 const getSearchFromSQL = () => {
-  const keyword = 'cat';
+  const keyword = 'basket';
   const pg = 1;
 
   con.connect(function (err) {
