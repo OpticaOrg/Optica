@@ -1,20 +1,41 @@
-import React from 'react'
-import { ImageComponent } from './imageComponent'
+import React from 'react';
+import { ImageComponent } from './imageComponent';
+import { useEffect, useState, useCallback } from 'react';
+const axios = require('axios');
+
 export function GalleryContainer() {
+  const [urls, setURLs] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
 
-  const imgUrl = 'https://image.lexica.art/md2/02e95e19-e40c-451c-b154-aac8f674013f'
+  useEffect(() => {
+    if (pageNumber >= 4) return;
+    (async () => {
+      const res = await axios(`http://localhost:3000/images?pg=${pageNumber}`, {
+        mode: 'no-cors'
+      });
+      const arr = res.data;
+      setURLs((oldURLs) => [...oldURLs, ...arr]);
+    })();
+  }, [pageNumber]);
 
-  const imageComponentArray = [];
-  let counter = 0;
-  while (counter < 50) {
-    imageComponentArray.push(<ImageComponent key={counter} imgUrl={imgUrl} />)
-    counter++
-  }
-  console.log(imageComponentArray);
+  //Infinite scrolling logic.
+  const onScroll = useCallback(() => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      setPageNumber(pageNumber + 1);
+    }
+  }, [pageNumber]);
 
-  return (
-    <div className='galleryContainer'>
-      {imageComponentArray}
-    </div>
-  )
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [onScroll]);
+
+  const toRender = urls.map((url) => {
+    return <ImageComponent key={Math.random() + Date.now()} imgUrl={url} />;
+  });
+
+  return <div className="galleryContainer">{toRender}</div>;
 }

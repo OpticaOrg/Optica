@@ -5,12 +5,12 @@ const util = require('util');
 require('dotenv').config();
 
 // Creates a connection to the AWS-RDS mySQL database using the credentials stored in the .env file.
-const con = mysql.createConnection({
-  host: process.env.AWS_ENDPOINT,
-  user: process.env.AWS_USER,
-  password: process.env.AWS_PASSWORD,
-  database: 'main'
-});
+// const con = mysql.createConnection({
+//   host: process.env.AWS_ENDPOINT,
+//   user: process.env.AWS_USER,
+//   password: process.env.AWS_PASSWORD,
+//   database: 'main'
+// });
 
 const imageController = {};
 
@@ -69,7 +69,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // Ideally, you'd do some real error handling to make sure it's not an issue with the database.
   try {
     await query(queryStringKeywordsTable, queryParametersKeywordsTable);
-  } catch { }
+  } catch {}
 
   // Insert a new record for the images_keywords table into the mySQL db.
   const queryStringImagesKeywordsTable = `INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)`;
@@ -89,11 +89,17 @@ imageController.saveImageToSQL = async (req, res, next) => {
 
 // Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
-  const { pg } = req.query;
+  const con = mysql.createConnection({
+    host: process.env.AWS_ENDPOINT,
+    user: process.env.AWS_USER,
+    password: process.env.AWS_PASSWORD,
+    database: 'main'
+  });
 
+  const { pg } = req.query;
   if (!pg) return next('Need a page number to get images from SQL.');
 
-  // from the images table, we select for the most recent urls, accounting for pg number received from frontend. 
+  // from the images table, we select for the most recent urls, accounting for pg number received from frontend.
   con.connect(function (err) {
     const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
     const specificImageStartValue = +pg * 16 - 16;
@@ -105,7 +111,7 @@ imageController.getImageFromSQL = (req, res, next) => {
       res.locals.urls = urlArray;
       return next();
     });
-    if (err) return next({ e });
+    if (err) return next(err);
   });
 };
 
@@ -114,9 +120,10 @@ imageController.getSearchFromSQL = (req, res, next) => {
   const { keyword } = req.query;
   const { pg } = req.query;
 
-  if (!keyword || !pg) return next('Need a keyword and page number to get images from SQL.');
+  if (!keyword || !pg)
+    return next('Need a keyword and page number to get images from SQL.');
 
-  // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend. 
+  // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend.
   con.connect(function (err) {
     const queryString = `SELECT url FROM images 
     INNER JOIN images_keywords ON images.id = images_keywords.image_id 
