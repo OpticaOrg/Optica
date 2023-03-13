@@ -19,7 +19,6 @@ con.connect((err) => {
   // con.query('DROP TABLE images');
   // con.query('SHOW TABLES', (err, res, fields) => {
   //   console.log(res);
-  //   debugger;
   // });
 
   // con.query('CREATE DATABASE IF NOT EXISTS main;');
