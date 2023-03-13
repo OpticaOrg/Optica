@@ -1,8 +1,10 @@
 const mysql = require('mysql');
 const uploadImageToBucket = require('../models/imageStorageModel');
 const util = require('util');
+// requiring and installing dotenv allows provides pathing the .env file
 require('dotenv').config();
 
+// Creates a connection to the AWS-RDS mySQL database using the credentials stored in the .env file.
 const con = mysql.createConnection({
   host: process.env.AWS_ENDPOINT,
   user: process.env.AWS_USER,
@@ -18,35 +20,38 @@ Function does two things:
 2) Updates the mySQL table with the URL from #1. 
 */
 imageController.saveImageToSQL = async (req, res, next) => {
-  //Upload the image to S3 bucket. Will recieve URL to store in mySQL.
-  //I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
   const { img } = req.body;
   const { prompt } = req.body;
+  // we allow for only a single keyword per image upload
   const { keyword } = req.body;
 
+  // error handling for missing parameters
   if (!img || !prompt || !keyword)
     return next('Need an image, prompt, AND a keyword to upload.');
 
-  //If the upload to S3 fails return the error.
+  // Upload the image to S3 bucket. Will recieve URL to store in mySQL.
+  // I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
   let amazonURL;
   try {
     amazonURL = await uploadImageToBucket(img);
+  // If the upload to S3 fails return the error.
   } catch (e) {
     return next(e);
   }
 
+  // If we do not receive an amazonURL from S3, return an error
   if (!amazonURL) return next('Amazon upload failed.');
 
-  //The newly inserted image ID is required for the join table.
+  // The newly inserted image ID is required for the join table.
   let newImageId;
 
-  //See https://stackoverflow.com/questions/57420576/how-to-synchronously-upload-files-to-s3-using-aws-sdk
+  // See https://stackoverflow.com/questions/57420576/how-to-synchronously-upload-files-to-s3-using-aws-sdk
   const query = util.promisify(con.query).bind(con);
 
-  //Insert a new record for the Images table into the mySQL db.
+  // Insert a new record for the Images table into the mySQL db.
   const queryStringImagesTable = `INSERT INTO images (url, prompt) VALUES (?, ?);`;
   const queryParametersImagesTable = [amazonURL, prompt];
-
+  
   try {
     newImageId = await query(
       queryStringImagesTable,
@@ -56,17 +61,17 @@ imageController.saveImageToSQL = async (req, res, next) => {
     return next(e);
   }
 
-  //Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
+  // Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
   const queryStringKeywordsTable = `INSERT INTO keywords (keyword) VALUES (?)`;
   const queryParametersKeywordsTable = [keyword];
 
-  //This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
-  //Ideally, you'd do some real error handling to make sure it's not an issue with the database.
+  // This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
+  // Ideally, you'd do some real error handling to make sure it's not an issue with the database.
   try {
     await query(queryStringKeywordsTable, queryParametersKeywordsTable);
   } catch {}
 
-  //Insert a new record for the images_keywords table into the mySQL db.
+  // Insert a new record for the images_keywords table into the mySQL db.
   const queryStringImagesKeywordsTable = `INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)`;
   const queryParametersImagesKeywordsTable = [newImageId.insertId, keyword];
 
@@ -82,13 +87,15 @@ imageController.saveImageToSQL = async (req, res, next) => {
   return next();
 };
 
-//Get 16 images (paginated) from the SQL database sorted by most recent.
+// Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
   const { pg } = req.query;
+  
+  if(!pg) return next('Need a page number to get images from SQL.');
 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
-    const specificImageStartValue = pg * 16 - 16;
+    const specificImageStartValue = +pg * 16 - 16;
     const queryParameters = [specificImageStartValue];
 
     con.query(queryString, queryParameters, (err, result, fields) => {
@@ -101,10 +108,12 @@ imageController.getImageFromSQL = (req, res, next) => {
   });
 };
 
-//Get 16 (paginated) images based on a given query string.
+// Get 16 (paginated) images based on a given query string.
 imageController.getSearchFromSQL = (req, res, next) => {
   const { keyword } = req.query;
   const { pg } = req.query;
+
+  if(!keyword || !pg) return next('Need a keyword and page number to get images from SQL.');
 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images 
