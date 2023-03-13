@@ -1,10 +1,12 @@
 body {
   background-color: rgb(40, 40, 40);
   text-align: center;
+  margin: 0;
+
 }
 
 h1 {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 5em;
   font-family: Palatino, URW Palladio L, serif;
   font-weight: 500;
@@ -15,7 +17,7 @@ h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 100;
   font-size: 1em;
-  margin-top: -20px;
+  margin-top: -30px;
   margin-bottom: 40px;
 }
 
@@ -26,7 +28,7 @@ h3 {
 }
 
 .searchForm {
-  background-color: rgb(80, 80, 80);
+  background-color: rgb(70, 70, 70);
   border-style: none;
   width: 450px;
   height: 35px;
@@ -34,7 +36,7 @@ h3 {
   margin: 10px;
   text-indent: 30px;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .searchForm::placeholder {
@@ -53,7 +55,7 @@ h3 {
   border-radius: 35px;
   margin: 0 10px;
   border-style: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 15px;
 }
 
@@ -78,8 +80,8 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  row-gap: 0px;
-  column-gap: 4px;
+  row-gap: 1px;
+  column-gap: 5px;
 }
 
 .imageComponentContainer {
@@ -94,5 +96,72 @@ h3 {
   // display: inline-block;
   // flex-grow: 1;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 15px;
+}
+
+/* Style the header with a grey background and some padding */
+.header {
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 5px 10px;
+  top: 0;
+  position: sticky;
+  backdrop-filter: blur(5px);
+}
+
+/* Style the header links */
+.header a {
+  float: left;
+  color: rgb(170, 170, 170);
+  text-align: center;
+  margin: 6px;
+  padding: 6px;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 25px;
+  border-radius: 4px;
+}
+
+/* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Palatino, URW Palladio L, serif;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9)
+}
+
+/* Change the background color on mouse-over */
+.header a:hover {
+  background-color: rgb(40, 40, 40);
+}
+
+/* Style the active/current link*/
+.header a.active {
+  // background-color: dodgerblue;
+  // color: white;
+}
+
+/* Float the link section to the right */
+.header-right {
+  float: right;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.loginButton {
+  width: 50px;
+  background-color: #004b91;
+}
+
+/* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+
+  .header-right {
+    float: none;
+  }
 }

@@ -4,7 +4,7 @@ export function SearchComponent() {
   return (
     <div>
       <h1>Optica</h1>
-      <h3>The OpenAI DALL-E Search Engine</h3>
+      <h3>The OpenAI DALL&#8226;E Search Engine</h3>
       <form className="search">
         <label>
           <input
