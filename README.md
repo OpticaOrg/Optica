@@ -28,3 +28,4 @@ This database holds the actual image files. Images are accessed using an Object 
 2. Create a relational database with a date attribute and do the querying by that attribute. Currently we are querying by id (which does work based on how our id attribute, but
    it's likely not best practice.)
 3. The error handling for pretty much every step of the way needs serious thought and refactoring. There are some actually interesting error handling problems in imageController.js.
+4. Refactor the images table to make the image URL the primary key.
