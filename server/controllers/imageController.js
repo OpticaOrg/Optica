@@ -34,7 +34,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   let amazonURL;
   try {
     amazonURL = await uploadImageToBucket(img);
-  // If the upload to S3 fails return the error.
+    // If the upload to S3 fails return the error.
   } catch (e) {
     return next(e);
   }
@@ -45,13 +45,13 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // The newly inserted image ID is required for the join table.
   let newImageId;
 
-  // See https://stackoverflow.com/questions/57420576/how-to-synchronously-upload-files-to-s3-using-aws-sdk
+  // See https://stackoverflow.com/questions/44004418/node-js-async-await-using-with-mysql
   const query = util.promisify(con.query).bind(con);
 
   // Insert a new record for the Images table into the mySQL db.
   const queryStringImagesTable = `INSERT INTO images (url, prompt) VALUES (?, ?);`;
   const queryParametersImagesTable = [amazonURL, prompt];
-  
+
   try {
     newImageId = await query(
       queryStringImagesTable,
@@ -69,7 +69,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // Ideally, you'd do some real error handling to make sure it's not an issue with the database.
   try {
     await query(queryStringKeywordsTable, queryParametersKeywordsTable);
-  } catch {}
+  } catch { }
 
   // Insert a new record for the images_keywords table into the mySQL db.
   const queryStringImagesKeywordsTable = `INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)`;
@@ -90,9 +90,10 @@ imageController.saveImageToSQL = async (req, res, next) => {
 // Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
   const { pg } = req.query;
-  
-  if(!pg) return next('Need a page number to get images from SQL.');
 
+  if (!pg) return next('Need a page number to get images from SQL.');
+
+  // from the images table, we select for the most recent urls, accounting for pg number received from frontend. 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
     const specificImageStartValue = +pg * 16 - 16;
@@ -113,8 +114,9 @@ imageController.getSearchFromSQL = (req, res, next) => {
   const { keyword } = req.query;
   const { pg } = req.query;
 
-  if(!keyword || !pg) return next('Need a keyword and page number to get images from SQL.');
+  if (!keyword || !pg) return next('Need a keyword and page number to get images from SQL.');
 
+  // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend. 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images 
     INNER JOIN images_keywords ON images.id = images_keywords.image_id 
