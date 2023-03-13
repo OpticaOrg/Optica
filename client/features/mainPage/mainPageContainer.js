@@ -12,6 +12,7 @@ export function MainPage() {
           <a class="active" href="#home">Home</a>
           <a href="#contact">Contact</a>
           <a href="#about">About</a>
+          <a className='loginButton' href="#login">Login</a>
         </div>
       </div>
       <div className='mainPage'>
