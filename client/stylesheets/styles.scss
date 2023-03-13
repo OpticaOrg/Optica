@@ -1,0 +1,98 @@
+body {
+  background-color: rgb(40, 40, 40);
+  text-align: center;
+}
+
+h1 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 5em;
+  font-family: Palatino, URW Palladio L, serif;
+  font-weight: 500;
+}
+
+h3 {
+  color: rgb(170, 170, 170);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 100;
+  font-size: 1em;
+  margin-top: -20px;
+  margin-bottom: 40px;
+}
+
+.mainPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.searchForm {
+  background-color: rgb(80, 80, 80);
+  border-style: none;
+  width: 450px;
+  height: 35px;
+  border-radius: 35px;
+  margin: 10px;
+  text-indent: 30px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.searchForm::placeholder {
+  color: rgb(170, 170, 170);
+  opacity: 1;
+}
+
+.buttonsContainer {
+  margin: 10px;
+  margin-bottom: 50px;
+}
+
+.buttons {
+  height: 35px;
+  width: 120px;
+  border-radius: 35px;
+  margin: 0 10px;
+  border-style: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+}
+
+.buttons:active {
+  opacity: 0.7;
+}
+
+.buttons:hover {
+  cursor: pointer;
+}
+
+#searchButton {
+  background-color: #004b91;
+}
+
+#uploadButton {
+  border: 1.2px solid rgba(255, 255, 255, 0.8);
+  background-color: rgb(40, 40, 40);
+}
+
+.galleryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 0px;
+  column-gap: 4px;
+}
+
+.imageComponentContainer {
+  // display: inline-block;
+  // flex-grow: 1;
+  // width: 21%;
+  width: 24.5%;
+}
+
+.imageComponent {
+  // width: 350px;
+  // display: inline-block;
+  // flex-grow: 1;
+  width: 100%;
+  border-radius: 5px;
+}
