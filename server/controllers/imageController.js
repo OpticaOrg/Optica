@@ -152,7 +152,6 @@ imageController.getSearchFromSQL = (req, res, next) => {
     con.query(queryString, queryParameters, (err, result, fields) => {
       if (err) return next({ err });
 
-      console.log(result);
       const urlArray = result.map((image) => image.url);
       res.locals.urls = urlArray;
       return next();
