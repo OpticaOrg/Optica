@@ -90,7 +90,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
 // Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
   const { pg } = req.query;
-  
+  console.log({pg})
   if(!pg) return next('Need a page number to get images from SQL.');
 
   con.connect(function (err) {

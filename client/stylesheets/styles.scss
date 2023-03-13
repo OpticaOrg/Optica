@@ -1,4 +1,11 @@
 .galleryContainer{
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 2px;
+  column-gap: 2px;
+}
+
+.imageComponent{
+  width: 350px;
 }
