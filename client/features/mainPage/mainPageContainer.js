@@ -4,12 +4,12 @@ import { SearchComponent } from './searchComponent'
 
 export function MainPage() {
 
-  return(
+  return (
     <div className='mainPage'>
       <SearchComponent />
       {/* <ImageUploadComponent /> */}
       <GalleryContainer />
     </div>
-  
+
   )
 }
