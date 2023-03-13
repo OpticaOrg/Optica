@@ -14,17 +14,40 @@ con.connect((err) => {
 
   // This Model file was ran using node. Thus, the database (main) and tables (images, keywords, images_keywords) were created on AWS' mySQL database using the below mySQL queries.
 
+  // con.query('DROP TABLE images_keywords');
+  // con.query('DROP TABLE keywords');
+  // con.query('DROP TABLE images');
+  // con.query('SHOW TABLES', (err, res, fields) => {
+  //   console.log(res);
+  //   debugger;
+  // });
+
   // con.query('CREATE DATABASE IF NOT EXISTS main;');
   // con.query('USE main;');
-  // con.query('CREATE TABLE IF NOT EXISTS images(id int NOT NULL AUTO_INCREMENT, url varchar(255), prompt varchar(255), PRIMARY KEY(id));', function (error, result, fields) {
-  //   console.log('images table: ', result);
-  // });
-  // con.query('CREATE TABLE IF NOT EXISTS keywords(id int NOT NULL AUTO_INCREMENT, keyword varchar(255), PRIMARY KEY(id));', function (error, result, fields) {
-  //   console.log('keywords table: ', result);
-  // });
-  // con.query('CREATE TABLE IF NOT EXISTS images_keywords(image_id int NOT NULL, keyword_id int NOT NULL, PRIMARY KEY(image_id, keyword_id), FOREIGN KEY (image_id) REFERENCES images(id), FOREIGN KEY (keyword_id) REFERENCES keywords(id));', function (error, result, fields) {
-  //   console.log('images_keywords table: ', result);
+  // con.query(
+  //   'CREATE TABLE IF NOT EXISTS images(id int NOT NULL AUTO_INCREMENT, url varchar(255), prompt varchar(255), PRIMARY KEY(id));',
+  //   function (error, result, fields) {
+  //     console.log('images table: ', result);
+  //   }
+  // );
+  // con.query(
+  //   'CREATE TABLE IF NOT EXISTS keywords(keyword varchar(255) NOT NULL UNIQUE, PRIMARY KEY(keyword));',
+  //   function (error, result, fields) {
+  //     console.log('keywords table: ', result);
+  //   }
+  // );
+  // con.query(
+  //   'CREATE TABLE IF NOT EXISTS images_keywords(image_id int NOT NULL, keyword_id varchar(255) NOT NULL, PRIMARY KEY(image_id, keyword_id), FOREIGN KEY (image_id) REFERENCES images(id), FOREIGN KEY (keyword_id) REFERENCES keywords(keyword));',
+  //   function (error, result, fields) {
+  //     console.log('images_keywords table: ', result);
+  //     console.log(err);
+  //   }
+  // );
+
+  // con.query('SHOW TABLES', (err, res, fields) => {
+  //   console.log(res);
+  //   debugger;
   // });
 
   con.end();
-})
+});
