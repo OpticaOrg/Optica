@@ -11,12 +11,17 @@ const con = mysql.createConnection({
 
 const imageController = {};
 
+/*
+Function does two things:
+1) Uploads the image to the S3 bucket using uploadImageToBucket(), which returns a URL.
+2) Updates the mySQL table with the URL from #1. 
+*/
 imageController.saveImageToSQL = (req, res, next) => {
   //Upload the image to S3 bucket. Will recieve URL to store in mySQL.
   //I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
   const { img } = req.body;
 
-  //If the upload fails return the error.
+  //If the upload to S3 fails return the error.
   let amazonURL;
   try {
     amazonURL = uploadImageToBucket(img);
@@ -24,6 +29,7 @@ imageController.saveImageToSQL = (req, res, next) => {
     return next({ e });
   }
 
+  //Insert a new record for the Images table into the mySQL db.
   if (req.query.prompt) {
     console.log('Inside imageController.addImage middleware');
     con.connect((err) => {
@@ -42,6 +48,7 @@ imageController.saveImageToSQL = (req, res, next) => {
   }
 };
 
+//Get 16 images from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
   con.connect(function (err) {
     con.query(
@@ -58,6 +65,7 @@ imageController.getImageFromSQL = (req, res, next) => {
   });
 };
 
+//Get 16 (paginated) images based on a given query string.
 imageController.getSearchFromSQL = (req, res, next) => {
   const { id } = req.query;
   const { pg } = req.query;
@@ -68,7 +76,7 @@ imageController.getSearchFromSQL = (req, res, next) => {
       INNER JOIN images_keywords ON images.id = images_keywords.image_id 
       INNER JOIN keywords ON images_keywords.keyword_id = keywords.id 
       WHERE keywords.keyword = ${id}
-      LIMIT 16 OFFSET ${(pg * 16) - 16}`,
+      LIMIT 16 OFFSET ${pg * 16 - 16}`,
       function (err, result, fields) {
         if (err) return next({ err });
 
