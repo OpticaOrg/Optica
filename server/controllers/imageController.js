@@ -34,7 +34,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   let amazonURL;
   try {
     amazonURL = await uploadImageToBucket(img);
-  // If the upload to S3 fails return the error.
+    // If the upload to S3 fails return the error.
   } catch (e) {
     return next(e);
   }
@@ -51,7 +51,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // Insert a new record for the Images table into the mySQL db.
   const queryStringImagesTable = `INSERT INTO images (url, prompt) VALUES (?, ?);`;
   const queryParametersImagesTable = [amazonURL, prompt];
-  
+
   try {
     newImageId = await query(
       queryStringImagesTable,
@@ -90,8 +90,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
 // Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
   const { pg } = req.query;
-  console.log({pg})
-  if(!pg) return next('Need a page number to get images from SQL.');
+  if (!pg) return next('Need a page number to get images from SQL.');
 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
@@ -102,9 +101,10 @@ imageController.getImageFromSQL = (req, res, next) => {
       if (err) return next({ err });
       const urlArray = result.map((image) => image.url);
       res.locals.urls = urlArray;
+      console.log(urlArray);
       return next();
     });
-    if (err) return next({ e });
+    if (err) return next(err);
   });
 };
 
@@ -113,7 +113,8 @@ imageController.getSearchFromSQL = (req, res, next) => {
   const { keyword } = req.query;
   const { pg } = req.query;
 
-  if(!keyword || !pg) return next('Need a keyword and page number to get images from SQL.');
+  if (!keyword || !pg)
+    return next('Need a keyword and page number to get images from SQL.');
 
   con.connect(function (err) {
     const queryString = `SELECT url FROM images 

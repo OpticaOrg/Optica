@@ -1,8 +1,7 @@
-import React from 'react'
-import { ImageComponent } from './imageComponent'
+import React from 'react';
+import { ImageComponent } from './imageComponent';
 import { useEffect } from 'react';
 export function GalleryContainer() {
-  
   // get request for pages
   // get request to localhost:3000/images?pg={page}
 
@@ -40,45 +39,46 @@ export function GalleryContainer() {
 
   // const enpoint = 'http://localhost:3000/images'
   // const firstSearchParams = new URLSearchParams({'pg': 1});
-  
-  useEffect(() => {
 
-    fetch('http://localhost:3000/images?pg=1', {
-      method: 'get', 
-      headers: {'Content-Type': 'application/json'}, 
-      mode: 'no-cors'
-    })
-      .then((res) => {
-      console.log(res);
-      console.log(res.body);
-      return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      // .then(() => {
-      //   for (let i = 0 ; i < pageArray[0].length ; i++) {
-      //     imageComponentArray.push(<ImageComponent key={counter} imgUrl={array[i]}/>)
-      //   }
-      // })
-      .catch((e) => {
-        console.log(e);
-      })
-  }, [])
-  
-  
+  useEffect(() => {
+    (async () => {
+      const res = await fetch('http://localhost:3000/images?pg=1');
+      const arr = await res.json();
+      console.log(arr);
+    })();
+    // fetch('http://localhost:3000/images?pg=1', {
+    //   method: 'get',
+    //   headers: {'Content-Type': 'application/json'},
+    //   mode: 'no-cors'
+    // })
+    //   .then((res) => {
+    //   console.log(res);
+    //   console.log(res.body);
+    //   return res.json();
+    //   })
+    //   .then((data) => {
+    //     console.log(data);
+    //   })
+    //   // .then(() => {
+    //   //   for (let i = 0 ; i < pageArray[0].length ; i++) {
+    //   //     imageComponentArray.push(<ImageComponent key={counter} imgUrl={array[i]}/>)
+    //   //   }
+    //   // })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   })
+  }, []);
+
   // let counter = 0;
   // while (counter < 16){
   //   imageComponentArray.push(<ImageComponent key={counter} imgUrl={array[counter]}/>)
   //   counter++
   // }
 
-  
-
-  return(
-    <div className='galleryContainer'>
+  return (
+    <div className="galleryContainer">
       {/* <h1>hello</h1> */}
       {imageComponentArray}
     </div>
-  )
+  );
 }
