@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageComponent } from './imageComponent';
 import { useEffect } from 'react';
+const axios = require('axios');
 export function GalleryContainer() {
   // get request for pages
   // get request to localhost:3000/images?pg={page}
@@ -42,23 +43,25 @@ export function GalleryContainer() {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch('http://localhost:3000/images?pg=1');
-      const arr = await res.json();
-      console.log(arr);
+      const res = await axios('http://localhost:3000/images?pg=1', {
+        mode: 'no-cors'
+      });
+      const arr = await res;
+      console.log(arr.data);
     })();
     // fetch('http://localhost:3000/images?pg=1', {
     //   method: 'get',
-    //   headers: {'Content-Type': 'application/json'},
+    //   headers: { 'Content-Type': 'application/json' },
     //   mode: 'no-cors'
     // })
     //   .then((res) => {
-    //   console.log(res);
-    //   console.log(res.body);
-    //   return res.json();
+    //     console.log(res);
+    //     console.log(res.body);
+    //     return res.json();
     //   })
     //   .then((data) => {
     //     console.log(data);
-    //   })
+    //   });
     //   // .then(() => {
     //   //   for (let i = 0 ; i < pageArray[0].length ; i++) {
     //   //     imageComponentArray.push(<ImageComponent key={counter} imgUrl={array[i]}/>)

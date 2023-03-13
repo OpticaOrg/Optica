@@ -5,12 +5,12 @@ const util = require('util');
 require('dotenv').config();
 
 // Creates a connection to the AWS-RDS mySQL database using the credentials stored in the .env file.
-const con = mysql.createConnection({
-  host: process.env.AWS_ENDPOINT,
-  user: process.env.AWS_USER,
-  password: process.env.AWS_PASSWORD,
-  database: 'main'
-});
+// const con = mysql.createConnection({
+//   host: process.env.AWS_ENDPOINT,
+//   user: process.env.AWS_USER,
+//   password: process.env.AWS_PASSWORD,
+//   database: 'main'
+// });
 
 const imageController = {};
 
@@ -89,6 +89,13 @@ imageController.saveImageToSQL = async (req, res, next) => {
 
 // Get 16 images (paginated) from the SQL database sorted by most recent.
 imageController.getImageFromSQL = (req, res, next) => {
+  const con = mysql.createConnection({
+    host: process.env.AWS_ENDPOINT,
+    user: process.env.AWS_USER,
+    password: process.env.AWS_PASSWORD,
+    database: 'main'
+  });
+
   const { pg } = req.query;
   if (!pg) return next('Need a page number to get images from SQL.');
 
@@ -101,7 +108,6 @@ imageController.getImageFromSQL = (req, res, next) => {
       if (err) return next({ err });
       const urlArray = result.map((image) => image.url);
       res.locals.urls = urlArray;
-      console.log(urlArray);
       return next();
     });
     if (err) return next(err);
