@@ -26,8 +26,42 @@ This database holds the actual image files. Images are accessed using an Object 
 
 ### Future Development Ideas
 
-1. Support multi-keyword queries.
+1. Support single/multi-keyword queries.
 2. Create a relational database with a date attribute and do the querying by that attribute. Currently we are querying by id (which does work based on how our id attribute, but
    it's likely not best practice.)
 3. The error handling for pretty much every step of the way needs serious thought and refactoring. There are some actually interesting error handling problems in imageController.js.
 4. Refactor the images table to use the URL as the primary key. There's no real need for an ID, as you want the URLs to be unique.
+
+
+## Frontend
+
+Everything is currently built out with functional React and Hooks -BUT- RTK is a dependency, and the scaffolding for RTK is all there. Theoretically this could be refactored to use RTK.
+
+# Componenets
+This is rough diagram of the tree structure of the React App
+
+                            index.html
+                               |
+                            index.js
+                               |
+                            App.jsx
+                               |
+                        mainPageContainer.js
+                  /            |            \
+searchComponent.js    imageUploadComponent    galleryContainer.js
+                                                    |
+                                              imageComponent.js
+                                              
+                                             
+
+- the heavy lifting of the app is happening in the galleryContainer
+
+## querying db
+- images are fetched via an axios get request to the DB at the endpoint of /images with a request parameter of a number.
+- the req param equates to a page number.
+- image urls a served from a database as arrays of 16 image urls at a time (1 page).
+
+## some ideas for iteration
+- send form data from search query to backend
+- integrate RTK for state management
+- integrate image upload component
