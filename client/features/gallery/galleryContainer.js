@@ -1,24 +1,37 @@
 import React from 'react';
 import { ImageComponent } from './imageComponent';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 const axios = require('axios');
+
 export function GalleryContainer() {
   const [urls, setURLs] = useState([]);
-  // const enpoint = 'http://localhost:3000/images'
-  // const firstSearchParams = new URLSearchParams({'pg': 1});
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
+    if (pageNumber >= 4) return;
     (async () => {
-      const res = await axios('http://localhost:3000/images?pg=1', {
+      const res = await axios(`http://localhost:3000/images?pg=${pageNumber}`, {
         mode: 'no-cors'
       });
       const arr = res.data;
-      console.log(arr);
-      console.log(urls);
       setURLs((oldURLs) => [...oldURLs, ...arr]);
-      console.log(urls);
     })();
-  }, []);
+  }, [pageNumber]);
+
+  //Infinite scrolling logic.
+  const onScroll = useCallback(() => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    if (scrollTop + clientHeight >= scrollHeight) {
+      setPageNumber(pageNumber + 1);
+    }
+  }, [pageNumber]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [onScroll]);
 
   const toRender = urls.map((url) => {
     return <ImageComponent key={Math.random() + Date.now()} imgUrl={url} />;
