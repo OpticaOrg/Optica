@@ -12,6 +12,8 @@ There are two major processes happening on the backend:
 
 ### Database
 
+![ER Diagram](./readmeAssets/erDiagram.jpg)
+
 Effectively storing and retrieving image data merits two separate databases: one for easily storing/querying relational data and one for managing the image files.
 
 #### AWS RDS mySQL
