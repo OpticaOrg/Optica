@@ -25,6 +25,13 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // we allow for only a single keyword per image upload
   const { keyword } = req.body;
 
+  const con = mysql.createConnection({
+    host: process.env.AWS_ENDPOINT,
+    user: process.env.AWS_USER,
+    password: process.env.AWS_PASSWORD,
+    database: 'main'
+  });
+
   // error handling for missing parameters
   if (!img || !prompt || !keyword)
     return next('Need an image, prompt, AND a keyword to upload.');
@@ -122,6 +129,13 @@ imageController.getSearchFromSQL = (req, res, next) => {
 
   if (!keyword || !pg)
     return next('Need a keyword and page number to get images from SQL.');
+
+  const con = mysql.createConnection({
+    host: process.env.AWS_ENDPOINT,
+    user: process.env.AWS_USER,
+    password: process.env.AWS_PASSWORD,
+    database: 'main'
+  });
 
   // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend.
   con.connect(function (err) {
