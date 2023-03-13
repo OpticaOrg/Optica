@@ -45,7 +45,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   // The newly inserted image ID is required for the join table.
   let newImageId;
 
-  // See https://stackoverflow.com/questions/57420576/how-to-synchronously-upload-files-to-s3-using-aws-sdk
+  // See https://stackoverflow.com/questions/44004418/node-js-async-await-using-with-mysql
   const query = util.promisify(con.query).bind(con);
 
   // Insert a new record for the Images table into the mySQL db.
@@ -99,6 +99,7 @@ imageController.getImageFromSQL = (req, res, next) => {
   const { pg } = req.query;
   if (!pg) return next('Need a page number to get images from SQL.');
 
+  // from the images table, we select for the most recent urls, accounting for pg number received from frontend.
   con.connect(function (err) {
     const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
     const specificImageStartValue = +pg * 16 - 16;
@@ -122,6 +123,7 @@ imageController.getSearchFromSQL = (req, res, next) => {
   if (!keyword || !pg)
     return next('Need a keyword and page number to get images from SQL.');
 
+  // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend.
   con.connect(function (err) {
     const queryString = `SELECT url FROM images 
     INNER JOIN images_keywords ON images.id = images_keywords.image_id 

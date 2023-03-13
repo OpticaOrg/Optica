@@ -1,10 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-export function ImageComponent({imgUrl}) {
+export function ImageComponent({ imgUrl }) {
   return (
-    <div>
+    <div className="imageComponentContainer">
       <img className="imageComponent" src={imgUrl}></img>
     </div>
-
-  )
+  );
 }
