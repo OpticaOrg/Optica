@@ -1,8 +1,6 @@
 const mysql = require('mysql');
 const uploadImageToBucket = require('../models/imageStorageModel');
 const util = require('util');
-// requiring and installing dotenv allows provides pathing the .env file
-require('dotenv').config();
 
 // Creates a connection to the AWS-RDS mySQL database using the credentials stored in the .env file.
 // const con = mysql.createConnection({

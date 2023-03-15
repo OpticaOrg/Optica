@@ -1,10 +1,11 @@
-import React from 'react';
-import { GalleryContainer } from '../gallery/galleryContainer';
-import { SearchComponent } from './searchComponent';
-import { useState } from 'react';
+import React from "react";
+import { GalleryContainer } from "../gallery/galleryContainer";
+import { SearchComponent } from "./searchComponent";
+import { useState } from "react";
+import BlobView from "../testRenderBlob/blobView";
 
 export function MainPage() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const searchTermHandler = (searchFieldValue) => {
     setSearchTerm(searchFieldValue);
@@ -12,6 +13,7 @@ export function MainPage() {
 
   return (
     <>
+      <BlobView></BlobView>
       <div className="header">
         <a href="#default" className="logo">
           Optica

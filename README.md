@@ -68,3 +68,12 @@ imageComponent.js
 - send form data from search query to backend
 - integrate RTK for state management
 - integrate image upload component
+
+## Image Conversion Flow
+
+- input type="file"
+- convert to buffer array
+- JSON.string and send to server
+- server converts to Mongodb Buffer, type 0
+- post to Mongodb as buffer type
+-
