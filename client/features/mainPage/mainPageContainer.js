@@ -2,6 +2,7 @@ import React from "react";
 import { GalleryContainer } from "../gallery/galleryContainer";
 import { SearchComponent } from "./searchComponent";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import BlobView from "../testRenderBlob/blobView";
 
 export function MainPage() {
@@ -19,14 +20,14 @@ export function MainPage() {
           Optica
         </a>
         <div className="header-right">
-          <a className="active" href="#home">
+          <Link to="/" className="active">
             Home
-          </a>
+          </Link>
           <a href="#contact">Contact</a>
           <a href="#about">About</a>
-          <a className="loginButton" href="#login">
+          <Link to="/login" className="loginButton">
             Login
-          </a>
+          </Link>
         </div>
       </div>
       <div className="mainPage">
