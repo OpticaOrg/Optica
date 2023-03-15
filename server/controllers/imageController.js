@@ -12,6 +12,10 @@ const util = require('util');
 
 const imageController = {};
 
+imageController.getImageFromMongo = async (req,res,next) => {
+  
+}
+
 /*
 Function does two things:
 1) Uploads the image to the S3 bucket using uploadImageToBucket(), which returns a URL.

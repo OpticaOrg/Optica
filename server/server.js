@@ -1,15 +1,22 @@
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 // const Redis = require('redis');
 
 // const redisClient = Redis.createClient();
 
+function initialize() {
+  mongoose.connect(process.env.MONGO_URI);
+
+  const 
+}
+
 const app = express();
 const PORT = 3000;
 
-const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGO_URI);
+
+
 
 const imageController = require("./controllers/imageController");
 const imagesV2Router = require("./routes/imagesV2Router");
@@ -17,6 +24,7 @@ const imagesV2Router = require("./routes/imagesV2Router");
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(cors());
+
 
 app.use("/imagesV2", imagesV2Router);
 
@@ -43,6 +51,8 @@ app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).send("Something broke!");
 });
+
+initialize();
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}...`);
