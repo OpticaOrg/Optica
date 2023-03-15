@@ -1,16 +1,34 @@
-import React from "react";
-import { GalleryContainer } from "../gallery/galleryContainer";
-import { SearchComponent } from "./searchComponent";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import BlobView from "../testRenderBlob/blobView";
+import React from 'react';
+import { useState } from 'react';
+import { GalleryContainer } from '../gallery/galleryContainer';
+import { SearchComponent } from './searchComponent';
+import { useState, useHistory, useParams } from 'react';
+import { Link } from 'react-router-dom';
+import BlobView from '../testRenderBlob/blobView';
 
 export function MainPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const history = useHistory();
+  const [searchTerm, setSearchTerm] = useState('');
+  const { viewParam } = useParams();
+  const [layout, setLayout] = useState();
 
   const searchTermHandler = (searchFieldValue) => {
     setSearchTerm(searchFieldValue);
   };
+
+  useEffect(() => {
+    if (layout) {
+      setViewToShow(layout);
+    } else {
+      history.push('/base');
+    }
+  }, [layout]);
+
+  // If we sort, maybe a sort hook here? 
+
+
+
+
 
   return (
     <>
