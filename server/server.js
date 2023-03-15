@@ -1,7 +1,8 @@
+require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const initialImagesRouter = require("./routes/initialImagesRouter");
 // const Redis = require('redis');
 
 // const redisClient = Redis.createClient();
@@ -18,7 +19,7 @@ const PORT = 3000;
 
 
 
-const imageController = require("./controllers/imageController");
+// const imageController = require("./controllers/imageController");
 const imagesV2Router = require("./routes/imagesV2Router");
 
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use(cors());
 
 
 app.use("/imagesV2", imagesV2Router);
+app.use("/initialImages", initialImagesRouter);
 
 // // route to retrieve landing page of images
 // app.get("/images", imageController.getImageFromSQL, (req, res) => {
