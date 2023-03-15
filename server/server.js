@@ -1,6 +1,9 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+// const Redis = require('redis');
+
+// const redisClient = Redis.createClient();
 
 const app = express();
 const PORT = 3000;
