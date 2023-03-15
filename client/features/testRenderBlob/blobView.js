@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// git
+
 const convertImgToUint8 = (file) => {
   return new Promise((res, rej) => {
     const reader = new FileReader();
