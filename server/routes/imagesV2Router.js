@@ -12,10 +12,6 @@ router.get("/get_image", imagesController.getImageById, (req, res) => {
   res.status(200).json(res.locals.image);
 });
 
-router.post('/populate', imagesController.??????, (req, res) => {
-
-})
-
 router.get("/", (req, res) => {
   res.status(200).json("images v2");
 });

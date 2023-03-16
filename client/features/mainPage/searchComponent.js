@@ -26,10 +26,26 @@ export function SearchComponent({ searchHandler }) {
           />
         </label>
         <div className="buttonsContainer">
-          <button className="buttons" id="searchButton" type="search">
-            Search
-          </button>
-          <button className="buttons" id="uploadButton" type="upload image">
+          <button onClick={() => {
+            // searchHandler(currString);
+            // setCurrString('');
+            // const searched = document.querySelector('.searchForm');
+
+
+          }}>Search</button>
+          <button
+            // onClick={() => {
+            //   fetch('/initialImages/populate', {
+            //     method: 'POST',
+            //     headers: {
+            //       'Content-Type': 'application/json',
+            //     },
+            //   });
+            // }}
+            className="buttons"
+            id="uploadButton"
+            type="upload image"
+          >
             Upload Image
           </button>
         </div>
