@@ -1,8 +1,11 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
-export function SearchComponent({ searchHandler }) {
-  const [currString, setCurrString] = useState('');
+interface SearchComponentProps {
+  searchHandler: (searchFieldValue: string) => void
+}
+
+export default function SearchComponent ({ searchHandler }: SearchComponentProps): JSX.Element {
+  const [currString, setCurrString] = useState('')
 
   return (
     <div>
@@ -11,9 +14,9 @@ export function SearchComponent({ searchHandler }) {
       <form
         className="search"
         onSubmit={(e) => {
-          e.preventDefault();
-          searchHandler(currString);
-          setCurrString('');
+          e.preventDefault()
+          searchHandler(currString)
+          setCurrString('')
         }}
       >
         <label>
@@ -22,18 +25,18 @@ export function SearchComponent({ searchHandler }) {
             className="searchForm"
             placeholder="Search for an image"
             value={currString}
-            onChange={(e) => setCurrString(e.target.value)}
+            onChange={(e) => { setCurrString(e.target.value) }}
           />
         </label>
         <div className="buttonsContainer">
-          <button className="buttons" id="searchButton" type="search">
+          <button className="buttons" id="searchButton" type="submit">
             Search
           </button>
-          <button className="buttons" id="uploadButton" type="upload image">
+          <button className="buttons" id="uploadButton" type="button">
             Upload Image
           </button>
         </div>
       </form>
     </div>
-  );
+  )
 }

@@ -1,17 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "jsx": "react-jsx",
-    "lib": ["DOM", "ES2020"],
-    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    }
-  },
-  "include": ["src/**/*.tsx", "src/**/*.ts"]
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "lib": ["ES2015", "DOM"],
+ }
 }

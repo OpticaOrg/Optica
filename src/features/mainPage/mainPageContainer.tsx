@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GalleryContainer } from '../gallery/galleryContainer';
-import { SearchComponent } from './searchComponent';
-import { useState } from 'react';
+import SearchComponent from './searchComponent';
 
-export function MainPage() {
-  const [searchTerm, setSearchTerm] = useState('');
+export function MainPage (): JSX.Element {
+  const [searchTerm, setSearchTerm] = useState<string>('')
 
-  const searchTermHandler = (searchFieldValue) => {
-    setSearchTerm(searchFieldValue);
-  };
+  const searchTermHandler = (searchFieldValue: string): void => {
+    setSearchTerm(searchFieldValue)
+  }
 
   return (
     <>
@@ -33,5 +32,5 @@ export function MainPage() {
         <GalleryContainer submittedSearchTerm={searchTerm} />
       </div>
     </>
-  );
+  )
 }

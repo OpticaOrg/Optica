@@ -7,8 +7,8 @@ const PORT = 3000;
 
 const imageController = require('./controllers/imageController');
 
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
