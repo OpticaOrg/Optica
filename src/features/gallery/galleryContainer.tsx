@@ -1,13 +1,16 @@
-import React from 'react';
+import axios from 'axios';
+import { useCallback, useEffect, useState } from 'react';
 import { ImageComponent } from './imageComponent';
-import { useEffect, useState, useCallback } from 'react';
-const axios = require('axios');
 
-export function GalleryContainer({ submittedSearchTerm }) {
-  const [urls, setURLs] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [keepUpdating, setKeepUpdating] = useState(true);
-  const [currSearchTerm, setCurrSearchTerm] = useState('');
+interface GalleryContainerProps {
+  submittedSearchTerm: string;
+}
+
+export function GalleryContainer({ submittedSearchTerm } : GalleryContainerProps) {
+  const [urls, setURLs] = useState<string[]>([]);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [keepUpdating, setKeepUpdating] = useState<boolean>(true);
+  const [currSearchTerm, setCurrSearchTerm] = useState<string>('');
 
   useEffect(() => {
     if (submittedSearchTerm !== currSearchTerm) {
@@ -23,22 +26,20 @@ export function GalleryContainer({ submittedSearchTerm }) {
     if (currSearchTerm.length) {
       (async () => {
         const res = await axios(
-          `http://localhost:3000/search?pg=${pageNumber}&keyword=${currSearchTerm}`,
-          {
-            mode: 'no-cors'
-          }
+          `/api/search?pg=${pageNumber}&keyword=${currSearchTerm}`,
         );
         const arr = res.data;
-        if (arr.length !== 16) setKeepUpdating(false);
+
+        if (arr.length !== 16){
+          setKeepUpdating(false)
+        }
+        
         setURLs((oldURLs) => [...oldURLs, ...arr]);
       })();
     } else {
       (async () => {
         const res = await axios(
-          `http://localhost:3000/images?pg=${pageNumber}`,
-          {
-            mode: 'no-cors'
-          }
+          `/api/images?pg=${pageNumber}`,
         );
         const arr = res.data;
         if (arr.length !== 16) setKeepUpdating(false);
