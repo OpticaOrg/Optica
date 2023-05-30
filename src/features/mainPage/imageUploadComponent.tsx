@@ -1,9 +1,10 @@
-import react from 'react'
+
+// TODO: implement image upload component
 
 export function ImageUploadComponent() {
   return (
     <div className='imageUploadComponent'>
-      <a href>Upload an image</a>
+      Upload an image
     </div>
   )
 }
