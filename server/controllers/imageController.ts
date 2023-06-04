@@ -7,7 +7,7 @@ import uploadImageToBucket from '../models/imageStorageModel';
 
 dotenv.config();
 
-interface ImageController {
+export interface ImageController {
   /**
    * Inteface for middlewhare that handles image upload and retrieval
    * @typedef {Object} ImageController
@@ -205,12 +205,4 @@ const imageController : ImageController = {
   }
 }
 
-
-imageController.saveImageToSQL = 
-// Get 16 images (paginated) from the SQL database sorted by most recent.
-imageController.;
-
-// Get 16 (paginated) images based on a given query string.
-imageController.getSearchFromSQL = ;
-
-module.exports = imageController;
+export default imageController;

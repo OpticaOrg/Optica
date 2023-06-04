@@ -9,6 +9,6 @@
     "jsx": "react",
     "allowSyntheticDefaultImports": true,
     "lib": ["ES2015", "DOM"],
- },
+  },
   "include": ["src/**/*", "tests/**/*", "server/**/*"],
 }
