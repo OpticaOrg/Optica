@@ -2,12 +2,20 @@ import dotenv from 'dotenv';
 import { NextFunction, Request, Response } from 'express';
 import mysql from 'mysql';
 import util from 'util';
+import { z } from 'zod';
 import uploadImageToBucket from '../models/imageStorageModel';
 
 dotenv.config();
 
-// Types interface for the imageController object.
 interface ImageController {
+  /**
+   * Inteface for middlewhare that handles image upload and retrieval
+   * @typedef {Object} ImageController
+   * 
+   * @property {Function} saveImageToSQL - Uploads the image to the S3 bucket using uploadImageToBucket(), which returns a URL. Updates the mySQL table with the URL from #1.
+   * @property {Function} getImageFromSQL - Retrieves all images from the mySQL database.
+   * @property {Function} getSearchFromSQL - Retrieves all images from the mySQL database that match the search term.
+   */
   saveImageToSQL: (req: Request, res: Response, next: NextFunction) => Promise<void>;
   getImageFromSQL: (req: Request, res: Response, next: NextFunction) => void;
   getSearchFromSQL: (req: Request, res: Response, next: NextFunction) => void;
@@ -24,7 +32,7 @@ interface ImageController {
 
 
 const imageController : ImageController = {
-  /*
+  /**
     Function does two things:
     1. Uploads the image to the S3 bucket using uploadImageToBucket(), which returns a URL.
     2. Updates the mySQL table with the URL from #1.
@@ -38,6 +46,22 @@ const imageController : ImageController = {
   saveImageToSQL: async (req, res, next) => {
     const { img, prompt, keyword } = req.body;
 
+    // Validate the request body with zod.
+    const schema = z.object({
+      img: z.string(),
+      prompt: z.string(),
+      keyword: z.string()
+    })
+
+    const validated = schema.safeParse(req.body)
+
+    if (!validated.success) {
+      return next({
+        log: 'Need an image, prompt, AND a keyword to upload.',
+        message: validated.error
+      })
+    }
+
     const con = mysql.createConnection({
       host: process.env.AWS_ENDPOINT,
       user: process.env.AWS_USER,
@@ -45,28 +69,25 @@ const imageController : ImageController = {
       database: 'main'
     });
 
-    // error handling for missing parameters
-    if (!img || !prompt || !keyword) {
-      return next('Need an image, prompt, AND a keyword to upload.');
-    }
-
     // Upload the image to S3 bucket. Will recieve URL to store in mySQL.
     // I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
-    let amazonURL;
+    let amazonURL : string;
+
     try {
       amazonURL = await uploadImageToBucket(img);
+
+      // Amazon upload successful but still no URL? Something went wrong.
+      if (!amazonURL) {
+        return next('Amazon upload failed.');
+      }
+    } 
+    catch (e) {
       // If the upload to S3 fails return the error.
-    } catch (e) {
       return next(e);
     }
 
-    // If we do not receive an amazonURL from S3, return an error
-    if (!amazonURL) {
-      return next('Amazon upload failed.');
-    }
-
     // The newly inserted image ID is required for the join table.
-    let newImageId;
+    let newImageId : string;
 
     // See https://stackoverflow.com/questions/44004418/node-js-async-await-using-with-mysql
     const query = util.promisify(con.query).bind(con);
@@ -86,12 +107,17 @@ const imageController : ImageController = {
 
     // Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
     const queryStringKeywordsTable = 'INSERT INTO keywords (keyword) VALUES (?)';
-    const queryParametersKeywordsTable = [keyword];
+    const queryParametersKeywordsTable = [amazonURL, keyword];
 
     // This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
     // Ideally, you'd do some real error handling to make sure it's not an issue with the database.
     try {
-      await query(queryStringKeywordsTable, queryParametersKeywordsTable);
+      const result = await query(
+        queryStringKeywordsTable, 
+        queryParametersKeywordsTable
+      );
+
+      newImageId = result.insertId;
     } catch { }
 
     // Insert a new record for the images_keywords table into the mySQL db.
