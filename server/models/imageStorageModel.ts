@@ -1,16 +1,27 @@
-const AWS = require('aws-sdk');
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
-require('dotenv').config();
+import AWS from 'aws-sdk';
+import dotenv from 'dotenv';
+import { v4 as uuidv4 } from 'uuid';
+import { z } from 'zod';
+dotenv.config();
+
+// Validate environment variables with zod.
+const envVarsSchema = z.object({
+  AWS_S3_ACCESS_KEY_ID: z.string().nonempty(),
+  AWS_S3_SECRET_ACCESS_KEY: z.string().nonempty(),
+  BUCKET_NAME: z.string().nonempty(),
+  AWS_URL_STEM: z.string().nonempty()
+});
+
+const { AWS_S3_ACCESS_KEY_ID, AWS_S3_SECRET_ACCESS_KEY, BUCKET_NAME, AWS_URL_STEM } = envVarsSchema.parse(process.env);
 
 // Create a connection to the AWS S3 server.
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY
+  accessKeyId: AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: AWS_S3_SECRET_ACCESS_KEY
 });
 
 // Uplaod the image blob to a specified S3 bucket.
-const uploadFile = async (blob) => {
+const uploadFile = async (blob : string) => {
   // Read content from the file
   // NOTE: CURRENTLY EXPECTING THE BLOB, BUT WE CAN CHANGE THIS AS NECESSARY.
   // let fileContent;
@@ -40,4 +51,4 @@ const uploadFile = async (blob) => {
   return awsReturnedURL;
 };
 
-module.exports = uploadFile;
+export default uploadFile;
