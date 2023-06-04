@@ -13,5 +13,4 @@ plugins:
 rules:
   semi: off
   '@typescript-eslint/semi': off
-
 parser: '@typescript-eslint/parser'

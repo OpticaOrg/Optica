@@ -17,7 +17,7 @@ const imageController = {};
 /*
 Function does two things:
 1) Uploads the image to the S3 bucket using uploadImageToBucket(), which returns a URL.
-2) Updates the mySQL table with the URL from #1. 
+2) Updates the mySQL table with the URL from #1.
 */
 imageController.saveImageToSQL = async (req, res, next) => {
   const { img } = req.body;
@@ -33,8 +33,9 @@ imageController.saveImageToSQL = async (req, res, next) => {
   });
 
   // error handling for missing parameters
-  if (!img || !prompt || !keyword)
+  if (!img || !prompt || !keyword) {
     return next('Need an image, prompt, AND a keyword to upload.');
+  }
 
   // Upload the image to S3 bucket. Will recieve URL to store in mySQL.
   // I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
@@ -56,7 +57,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   const query = util.promisify(con.query).bind(con);
 
   // Insert a new record for the Images table into the mySQL db.
-  const queryStringImagesTable = `INSERT INTO images (url, prompt) VALUES (?, ?);`;
+  const queryStringImagesTable = 'INSERT INTO images (url, prompt) VALUES (?, ?);';
   const queryParametersImagesTable = [amazonURL, prompt];
 
   try {
@@ -69,7 +70,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   }
 
   // Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
-  const queryStringKeywordsTable = `INSERT INTO keywords (keyword) VALUES (?)`;
+  const queryStringKeywordsTable = 'INSERT INTO keywords (keyword) VALUES (?)';
   const queryParametersKeywordsTable = [keyword];
 
   // This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
@@ -79,7 +80,7 @@ imageController.saveImageToSQL = async (req, res, next) => {
   } catch {}
 
   // Insert a new record for the images_keywords table into the mySQL db.
-  const queryStringImagesKeywordsTable = `INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)`;
+  const queryStringImagesKeywordsTable = 'INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)';
   const queryParametersImagesKeywordsTable = [newImageId.insertId, keyword];
 
   con.query(
@@ -108,7 +109,7 @@ imageController.getImageFromSQL = (req, res, next) => {
 
   // from the images table, we select for the most recent urls, accounting for pg number received from frontend.
   con.connect(function (err) {
-    const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
+    const queryString = 'SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?';
     const specificImageStartValue = +pg * 16 - 16;
     const queryParameters = [specificImageStartValue];
 
@@ -127,8 +128,7 @@ imageController.getSearchFromSQL = (req, res, next) => {
   const { keyword } = req.query;
   const { pg } = req.query;
 
-  if (!keyword || !pg)
-    return next('Need a keyword and page number to get images from SQL.');
+  if (!keyword || !pg) { return next('Need a keyword and page number to get images from SQL.'); }
 
   const con = mysql.createConnection({
     host: process.env.AWS_ENDPOINT,

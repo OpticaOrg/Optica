@@ -1,20 +1,19 @@
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
+import cors from 'cors';
+import Express, { type Request, type Response } from 'express';
+import imageController from './controllers/imageController';
 
-const app = express();
+const app = Express();
 const PORT = 3000;
 
-const imageController = require('./controllers/imageController');
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(Express.json({ limit: '10mb' }));
+app.use(Express.urlencoded({ extended: true }));
 
 app.use(cors());
 
 // route to retrieve landing page of images
-app.get('/images', imageController.getImageFromSQL, (req, res) => {
-  return res.status(200).json(res.locals.urls);
+app.get('/images', imageController.getImageFromSQL, (req: Request, res: Response) => {
+  const { urls }: Record<string, any> = res.locals;
+  return res.status(200).json(urls);
 });
 
 // route to save an image to the SQL database

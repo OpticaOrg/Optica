@@ -3,16 +3,16 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
-//Create a connection to the AWS S3 server.
+// Create a connection to the AWS S3 server.
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY
 });
 
-//Uplaod the image blob to a specified S3 bucket.
+// Uplaod the image blob to a specified S3 bucket.
 const uploadFile = async (blob) => {
   // Read content from the file
-  //NOTE: CURRENTLY EXPECTING THE BLOB, BUT WE CAN CHANGE THIS AS NECESSARY.
+  // NOTE: CURRENTLY EXPECTING THE BLOB, BUT WE CAN CHANGE THIS AS NECESSARY.
   // let fileContent;
   // try {
   //   fileContent = fs.readFileSync(fileName);
@@ -28,7 +28,7 @@ const uploadFile = async (blob) => {
 
   // Uploading files to the bucket. Return the URL. See https://stackoverflow.com/questions/57420576/how-to-synchronously-upload-files-to-s3-using-aws-sdk.
   let awsReturnedURL;
-  //Will need to catch errors here and pass to global error handler.
+  // Will need to catch errors here and pass to global error handler.
   const stored = await s3
     .upload(params, function (err, data) {
       if (err) {
