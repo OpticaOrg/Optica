@@ -21,6 +21,21 @@ export interface ImageController {
   getSearchFromSQL: (req: Request, res: Response, next: NextFunction) => void;
 }
 
+// set secrets in lowest scope and validate first
+const validateEnv = z.object({
+  AWS_ENDPOINT: z.string().nonempty(),
+  AWS_USER: z.string().nonempty(),
+  AWS_PASSWORD: z.string().nonempty(),
+})
+
+const { AWS_ENDPOINT, AWS_USER, AWS_PASSWORD } = validateEnv.parse(process.env)
+
+const con = mysql.createConnection({
+  host: AWS_ENDPOINT,
+  user: AWS_USER,
+  password: AWS_PASSWORD,
+  database: 'main'
+});
 
 // Creates a connection to the AWS-RDS mySQL database using the credentials stored in the .env file.
 // const con = mysql.createConnection({
@@ -61,13 +76,6 @@ const imageController : ImageController = {
         message: validated.error
       })
     }
-
-    const con = mysql.createConnection({
-      host: process.env.AWS_ENDPOINT,
-      user: process.env.AWS_USER,
-      password: process.env.AWS_PASSWORD,
-      database: 'main'
-    });
 
     // Upload the image to S3 bucket. Will recieve URL to store in mySQL.
     // I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
@@ -143,15 +151,12 @@ const imageController : ImageController = {
   */
 
   getImageFromSQL: (req, res, next) => {
-    const con = mysql.createConnection({
-      host: process.env.AWS_ENDPOINT,
-      user: process.env.AWS_USER,
-      password: process.env.AWS_PASSWORD,
-      database: 'main'
-    });
+
 
     const { pg } = req.query;
-    if (!pg) return next('Need a page number to get images from SQL.');
+    if (!pg) {
+      return next('Need a page number to get images from SQL.');
+    }
 
     // from the images table, we select for the most recent urls, accounting for pg number received from frontend.
     con.connect(function (err) {
@@ -160,29 +165,34 @@ const imageController : ImageController = {
       const queryParameters = [specificImageStartValue];
 
       con.query(queryString, queryParameters, (err, result, fields) => {
-        if (err) return next({ err });
+        if (err) {
+          return next({ err });
+        }
         const urlArray = result.map((image) => image.url);
         res.locals.urls = urlArray;
         return next();
       });
-      if (err) return next(err);
+      if (err) {
+        return next(err);
+      }
     });
   },
+
   getSearchFromSQL: (req, res, next) => {
-    const { keyword } = req.query;
-    const { pg } = req.query;
+    const {keyword, pg} = req.query;
 
     if (!keyword || !pg) { return next('Need a keyword and page number to get images from SQL.'); }
 
-    const con = mysql.createConnection({
-      host: process.env.AWS_ENDPOINT,
-      user: process.env.AWS_USER,
-      password: process.env.AWS_PASSWORD,
-      database: 'main'
-    });
-
     // using the images_keywords join table, we select for the most recent urls according to a keyword, accounting for pg number received from frontend.
     con.connect(function (err) {
+      // Error handling for connection
+      if (err) {
+        return next({
+          log: 'Error in getSearchFromSQL',
+          message: err
+        });
+      }
+
       const queryString = `SELECT url FROM images 
     INNER JOIN images_keywords ON images.id = images_keywords.image_id 
     INNER JOIN keywords ON images_keywords.keyword_id = keywords.keyword
@@ -194,13 +204,18 @@ const imageController : ImageController = {
       const queryParameters = [keyword, specificImageStartValue];
 
       con.query(queryString, queryParameters, (err, result, fields) => {
-        if (err) return next({ err });
+        
+        if (err) {
+          return next({ err });
+        }
 
         const urlArray = result.map((image) => image.url);
         res.locals.urls = urlArray;
+
         return next();
       });
-      if (err) return next({ e });
+      
+
     });
   }
 }
