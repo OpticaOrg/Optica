@@ -33,11 +33,13 @@ const saveImageToSQL = async () => {
   }
 
   // Change: Implemented Zod validation for the input data.
+  let img : string, prompt : string, keyword : string;
 
   try {
     const validatedInputData = ImageDataSchema.parse(inputData);
     // If the validation passes, we can destructure the data.
-    const { img, prompt, keyword } = validatedInputData;
+    ({ img, prompt, keyword } = validatedInputData);
+
   } catch (e) {
     // If the validation fails, we can return the error.
     console.log('Need an image, prompt, AND a keyword to upload.')
