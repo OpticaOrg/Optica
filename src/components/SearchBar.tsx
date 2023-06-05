@@ -9,8 +9,10 @@ export default function SearchComponent ({ searchHandler }: SearchComponentProps
 
   return (
     <div>
-      <h1>Optica</h1>
-      <h3>The OpenAI DALL&#8226;E Search Engine</h3>
+      <div id='header'>
+        <h1 className='mb-14 mt-8'>Optica</h1>
+        <h3>The OpenAI DALL&#8226;E Search Engine</h3>
+      </div>
       <form
         className="search"
         onSubmit={(e) => {
