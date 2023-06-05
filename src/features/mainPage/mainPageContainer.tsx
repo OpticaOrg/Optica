@@ -28,7 +28,6 @@ export default function MainPage (): JSX.Element {
       </div>
       <div className="mainPage">
         <SearchComponent searchHandler={searchTermHandler} />
-        {/* <ImageUploadComponent /> */}
         <GalleryContainer submittedSearchTerm={searchTerm} />
       </div>
     </>

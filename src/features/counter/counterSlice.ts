@@ -27,13 +27,28 @@ export const counterSlice = createSlice({
   }
 })
 
+/**
+ * incrementAsync is a thunk function that dispatches those actions using the Redux Thunk middleware.
+ * 
+ * @param amount: number
+ * @returns: ThunkAction<void, RootState, unknown, any>
+ */
 export const incrementAsync = (amount: number): ThunkAction<void, RootState, unknown, any> => (dispatch) => {
   setTimeout(() => {
     dispatch(incrementByAmount(amount))
   }, 1000)
 }
 
-// Generated Action creators for each case reducer function
+/**
+ * The generated action creators will be named increment, decrement, and incrementByAmount.
+ */
 export const { increment, decrement, incrementByAmount } = counterSlice.actions
+
+/**
+ * selectCount is a selector function that takes a Redux state and returns the current value of counter.value from the state.
+ * 
+ * @param state 
+ * @returns 
+ */
 export const selectCount = (state: { counter: CounterState }): number => state.counter.value
 export default counterSlice.reducer

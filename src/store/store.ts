@@ -3,7 +3,9 @@ import counterReducer from '../features/counter/counterSlice';
 
 export type RootState = ReturnType<typeof store.getState>
 
-// creating Redux store & config Redux DevTools extension so that its inspectable
+/**
+ * The configureStore function accepts a single configuration object parameter, which lets you specify behavior of the store.
+ */
 const store = configureStore({
   reducer: {
     // defining a field inside the reducer parameter, we're telling the store to use this slice reducer function to handle all updates to that state
