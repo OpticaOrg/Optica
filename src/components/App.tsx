@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { GalleryContainer } from '../gallery/galleryContainer';
-import SearchComponent from './searchComponent';
+import '../stylesheets/styles.scss';
+import { GalleryContainer } from './Gallery';
+import SearchComponent from './SearchBar';
 
 export default function MainPage (): JSX.Element {
   const [searchTerm, setSearchTerm] = useState<string>('')

@@ -21,11 +21,12 @@
     "scripts",
     "acceptance-tests",
     "webpack",
-    "jest"
+    "jest",
+    "archive"
   ],
   "include": [
     "src",
     "__tests__",
     "server"
-, "setupTests.ts"  ]
+, "setupTests.ts", "archive/App.tsx", "archive/imageUploadComponent.tsx"  ]
 }

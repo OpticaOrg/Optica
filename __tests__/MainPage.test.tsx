@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import MainPage from '../src/features/mainPage/mainPageContainer';
+import MainPage from '../src/components/App';
 
 describe('MainPage', () => {
   

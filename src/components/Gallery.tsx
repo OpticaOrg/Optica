@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ImageComponent } from './imageComponent';
+import { ImageComponent } from './ImageComponent';
 
 interface GalleryContainerProps {
   submittedSearchTerm: string;
