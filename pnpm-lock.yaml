@@ -70,6 +70,9 @@ devDependencies:
   '@types/mysql':
     specifier: ^2.15.21
     version: 2.15.21
+  '@types/node':
+    specifier: ^20.2.5
+    version: 20.2.5
   '@types/react':
     specifier: ^18.2.8
     version: 18.2.8
@@ -136,6 +139,9 @@ devDependencies:
   postcss:
     specifier: ^8.4.24
     version: 8.4.24
+  prisma:
+    specifier: ^4.15.0
+    version: 4.15.0
   react-test-renderer:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
@@ -3208,6 +3214,11 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
+    dev: true
+
+  /@prisma/engines@4.15.0:
+    resolution: {integrity: sha512-FTaOCGs0LL0OW68juZlGxFtYviZa4xdQj/rQEdat2txw0s3Vu/saAPKjNVXfIgUsGXmQ72HPgNr6935/P8FNAA==}
+    requiresBuild: true
     dev: true
 
   /@reduxjs/toolkit@1.9.5(react-redux@8.0.7)(react@18.2.0):
@@ -7097,6 +7108,15 @@ packages:
       '@jest/schemas': 29.4.3
       ansi-styles: 5.2.0
       react-is: 18.2.0
+    dev: true
+
+  /prisma@4.15.0:
+    resolution: {integrity: sha512-iKZZpobPl48gTcSZVawLMQ3lEy6BnXwtoMj7hluoGFYu2kQ6F9LBuBrUyF95zRVnNo8/3KzLXJXJ5TEnLSJFiA==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 4.15.0
     dev: true
 
   /process-nextick-args@2.0.1:
