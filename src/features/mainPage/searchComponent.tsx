@@ -29,10 +29,20 @@ export default function SearchComponent ({ searchHandler }: SearchComponentProps
           />
         </label>
         <div className="buttonsContainer">
-          <button className="buttons" id="searchButton" type="submit">
+          <button
+            className="buttons"
+            id="searchButton"
+            type="submit"
+            aria-label="Search"
+          >
             Search
           </button>
-          <button className="buttons" id="uploadButton" type="button">
+          <button
+            className="buttons"
+            id="uploadButton"
+            type="button"
+            aria-label="Upload Image"
+          >
             Upload Image
           </button>
         </div>
