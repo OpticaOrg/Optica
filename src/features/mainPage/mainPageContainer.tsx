@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { GalleryContainer } from '../gallery/galleryContainer';
 import SearchComponent from './searchComponent';
 
-export function MainPage (): JSX.Element {
+export default function MainPage (): JSX.Element {
   const [searchTerm, setSearchTerm] = useState<string>('')
 
   const searchTermHandler = (searchFieldValue: string): void => {
