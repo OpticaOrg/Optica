@@ -3,69 +3,91 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ImageComponent } from './imageComponent';
 
 interface GalleryContainerProps {
-  submittedSearchTerm: string
+  submittedSearchTerm: string;
 }
 
-export function GalleryContainer ({ submittedSearchTerm }: GalleryContainerProps): JSX.Element {
+export function GalleryContainer({ submittedSearchTerm }: GalleryContainerProps): JSX.Element {
   const [urls, setURLs] = useState<string[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [keepUpdating, setKeepUpdating] = useState<boolean>(true);
-  const [currSearchTerm, setCurrSearchTerm] = useState<string>('');
+  const [hasMoreImages, setHasMoreImages] = useState<boolean>(true);
+  const [currentSearchTerm, setCurrentSearchTerm] = useState<string>('');
 
   useEffect(() => {
-    if (submittedSearchTerm !== currSearchTerm) {
-      setPageNumber(1);
-      setURLs([]);
-      setKeepUpdating(true);
-      setCurrSearchTerm(submittedSearchTerm);
+    if (submittedSearchTerm !== currentSearchTerm) {
+      resetSearch();
     }
   }, [submittedSearchTerm]);
 
+  /**
+   * resetSearch() resets the page number, URLs, and hasMoreImages state variables.
+   * It also sets the current search term to the submitted search term.
+   * 
+   * @returns 
+   */
+  function resetSearch() {
+    setPageNumber(1);
+    setURLs([]);
+    setHasMoreImages(true);
+    setCurrentSearchTerm(submittedSearchTerm);
+    return;
+  }
+
   useEffect(() => {
-    if (!keepUpdating) return;
-    if (currSearchTerm.length !== 0) {
-      void (async () => {
-        const res = await axios(
-          `/api/search?pg=${pageNumber}&keyword=${currSearchTerm}`
-        );
-        const arr = res.data;
+    if (hasMoreImages) loadImages();
+  }, [pageNumber, currentSearchTerm]);
 
-        if (arr.length !== 16) {
-          setKeepUpdating(false)
-        }
-
-        setURLs((oldURLs) => [...oldURLs, ...arr]);
-      })();
+  /**
+   * loadImages() makes a call to the backend to get a list of image URLs.
+   * If the current search term is not empty, it will make a call to the search endpoint.
+   * Otherwise, it will make a call to the images endpoint.
+   */
+  async function loadImages() {
+    let res;
+    if (currentSearchTerm.length !== 0) {
+      res = await axios(`/api/search?pg=${pageNumber}&keyword=${currentSearchTerm}`);
     } else {
-      void (async () => {
-        const res = await axios(
-          `/api/images?pg=${pageNumber}`
-        );
-        const arr = res.data;
-        if (arr.length !== 16) setKeepUpdating(false);
-        setURLs((oldURLs) => [...oldURLs, ...arr]);
-      })();
+      res = await axios(`/api/images?pg=${pageNumber}`);
     }
-  }, [pageNumber, currSearchTerm]);
 
-  // Infinite scrolling logic.
-  const onScroll = useCallback(() => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight) {
+    const newUrls = res.data;
+    if (newUrls.length !== 16) setHasMoreImages(false);
+    setURLs((oldURLs) => [...oldURLs, ...newUrls]);
+  }
+
+  /**
+   * handleScroll() is a callback function that is called when the user scrolls.
+   * If the user has scrolled to the bottom of the page, it will increment the page number.
+   * This will trigger a call to loadImages() in the useEffect hook.
+   */
+  const handleScroll = useCallback(() => {
+    if (isBottomOfPage()) {
       setPageNumber(pageNumber + 1);
     }
   }, [pageNumber]);
 
-  useEffect(() => {
-    window.addEventListener('scroll', onScroll);
-    return () => { window.removeEventListener('scroll', onScroll); };
-  }, [onScroll]);
+  /**
+   * isBottomOfPage() returns true if the user has scrolled to the bottom of the page.
+   * 
+   * @returns boolean
+   */
+  function isBottomOfPage() {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    return scrollTop + clientHeight >= scrollHeight;
+  }
 
-  const toRender = urls.map((url) => {
-    return <ImageComponent key={Math.random() + Date.now()} imgUrl={url} />;
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => { window.removeEventListener('scroll', handleScroll); };
+  }, [handleScroll]);
+
+  /**
+   * renderImages() maps the URLs to ImageComponents.
+   */
+  const renderImages = urls.map((url, index) => {
+    return <ImageComponent key={index} imgUrl={url} />;
   });
 
-  return <div className="galleryContainer">{toRender}</div>;
+  return <div className="galleryContainer">{renderImages}</div>;
 }
