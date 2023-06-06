@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": [
+      "ES2015",
+      "DOM"
+    ],
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "outDir": "build/dist",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES6",
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "archive"
+  ],
+  "include": [
+    "src",
+    "__tests__",
+    "server"
+, "setupTests.ts", "archive/App.tsx", "archive/imageUploadComponent.tsx"  ]
+}

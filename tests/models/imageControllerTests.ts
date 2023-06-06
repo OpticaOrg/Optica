@@ -1,8 +1,13 @@
+import dotenv from 'dotenv';
+import mysql from 'mysql';
+import path from 'path';
+import { z } from 'zod';
+import uploadImageToBucket from '../../server/models/imageStorageModel';
+
+dotenv.config()
+
 const fs = require('fs');
-const mysql = require('mysql');
 const uploadImageToBucket = require('../../server/models/imageStorageModel');
-require('dotenv').config();
-const path = require('path');
 const util = require('util');
 
 const con = mysql.createConnection({
@@ -12,17 +17,36 @@ const con = mysql.createConnection({
   database: 'main'
 });
 
+const ImageDataSchema = z.object({
+  img: z.string(),
+  prompt: z.string(),
+  keyword: z.string()
+});
+
 const saveImageToSQL = async () => {
-  //Upload the image to S3 bucket. Will recieve URL to store in mySQL.
-  //I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
-  const img = fs.readFileSync(path.resolve(__dirname, 'cat.jpg'));
-  const prompt = 'cool kitty';
-  const keyword = 'cat';
+  // Upload the image to S3 bucket. Will recieve URL to store in mySQL.
+  // I'M ASSUMING THE BLOB IS IN THE REQ.BODY AS "IMG" PROPERTY.
+  const inputData = {
+    img: fs.readFileSync(path.resolve(__dirname, 'cat.jpg')),
+    prompt: 'cool kitty',
+    keyword: 'cat'
+  }
 
-  if (!img || !prompt || !keyword)
-    return next('Need an image, prompt, AND a keyword to upload.');
+  // Change: Implemented Zod validation for the input data.
+  let img : string, prompt : string, keyword : string;
 
-  //If the upload to S3 fails return the error.
+  try {
+    const validatedInputData = ImageDataSchema.parse(inputData);
+    // If the validation passes, we can destructure the data.
+    ({ img, prompt, keyword } = validatedInputData);
+
+  } catch (e) {
+    // If the validation fails, we can return the error.
+    console.log('Need an image, prompt, AND a keyword to upload.')
+    console.error(e); return;
+  }
+
+  // If the upload to S3 fails return the error.
   let amazonURL;
   try {
     amazonURL = await uploadImageToBucket(img);
@@ -35,31 +59,31 @@ const saveImageToSQL = async () => {
 
   if (!amazonURL) return next('Amazon upload failed.');
 
-  //These IDs are needed to update the join table.
+  // These IDs are needed to update the join table.
   let newImageId, keywordKey;
 
   const query = util.promisify(con.query).bind(con);
 
-  //Insert a new record for the Images table into the mySQL db.
-  const queryStringImagesTable = `INSERT INTO images (url, prompt) VALUES (?, ?);`;
+  // Insert a new record for the Images table into the mySQL db.
+  const queryStringImagesTable = 'INSERT INTO images (url, prompt) VALUES (?, ?);';
   const queryParametersImagesTable = [amazonURL, prompt];
 
   newImageId = await query(queryStringImagesTable, queryParametersImagesTable);
 
-  //Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
-  //If it does, select the keyword.
-  const queryStringKeywordsTable = `INSERT INTO keywords (keyword) VALUES (?)`;
+  // Insert a new record for the Keywords table into the mySQL db, if it doesn't already exist in the table.
+  // If it does, select the keyword.
+  const queryStringKeywordsTable = 'INSERT INTO keywords (keyword) VALUES (?)';
   const queryParametersKeywordsTable = [keyword];
 
-  //This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
+  // This looks weird, but it works. You WILL get an error if the keyword already exists, but that's fine.
   try {
     await query(queryStringKeywordsTable, queryParametersKeywordsTable);
   } catch {}
 
-  //TEST RETURN VAL IF THE INSERTED KEYWORD DOES NOT EXIST IN TABLE. ALSO TEST IF DOES EXIST IN TABLE. YOU WANT TO GET THE VALUE.
+  // TEST RETURN VAL IF THE INSERTED KEYWORD DOES NOT EXIST IN TABLE. ALSO TEST IF DOES EXIST IN TABLE. YOU WANT TO GET THE VALUE.
 
   //   Insert a new record for the images_keywords table into the mySQL db.
-  const queryStringImagesKeywordsTable = `INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)`;
+  const queryStringImagesKeywordsTable = 'INSERT INTO images_keywords (image_id, keyword_id) VALUES (?, ?)';
   const queryParametersImagesKeywordsTable = [newImageId.insertId, keyword];
 
   con.query(
@@ -68,12 +92,10 @@ const saveImageToSQL = async () => {
     (err, result, fields) => {
       if (err) {
         console.log(err);
-        return;
       }
     }
   );
   console.log('done');
-  return;
 };
 
 // saveImageToSQL();
@@ -83,7 +105,7 @@ const getImageFromSQL = () => {
   const pg = 1;
 
   con.connect(function (err) {
-    const queryString = `SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?`;
+    const queryString = 'SELECT url FROM images ORDER BY id DESC LIMIT 16 OFFSET ?';
     const specificImageStartValue = pg * 16 - 16;
     const queryParameters = [specificImageStartValue];
 
@@ -105,7 +127,7 @@ const getKeywords = () => {
   const pg = 1;
 
   con.connect(function (err) {
-    const queryString = `SELECT * FROM keywords LIMIT 16 OFFSET ?`;
+    const queryString = 'SELECT * FROM keywords LIMIT 16 OFFSET ?';
     const specificImageStartValue = pg * 16 - 16;
     const queryParameters = [specificImageStartValue];
 
@@ -124,7 +146,7 @@ const getKeywords = () => {
 
 const getJoinTable = () => {
   con.connect(function (err) {
-    const queryString = `SELECT * FROM images_keywords;`;
+    const queryString = 'SELECT * FROM images_keywords;';
     const queryParameters = [];
 
     con.query(queryString, queryParameters, (err, result, fields) => {
@@ -162,7 +184,6 @@ const getSearchFromSQL = () => {
       }
 
       console.log(result);
-      return;
     });
     if (err) console.log(err);
   });

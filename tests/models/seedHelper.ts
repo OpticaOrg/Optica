@@ -1,4 +1,4 @@
-const prompts = [
+export const prompts: string[] = [
   'apple kiwi watermelon pineapple grape',
   'pear grape melon',
   'banana kiwi',
@@ -21,7 +21,7 @@ const prompts = [
   'orange pineapple'
 ];
 
-const keywords = [
+export const keywords: string[] = [
   'tunnel',
   'cabinet',
   'frost',
@@ -43,5 +43,3 @@ const keywords = [
   'thunder',
   'candle'
 ];
-
-module.exports = { keywords, prompts };
